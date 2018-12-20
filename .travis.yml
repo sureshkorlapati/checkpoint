@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t applayer/checkpoint-client-dev -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run applayer/checkpoint npm test -- --coverage
+
+after_success:
+  - docker build -t applayer/checkpoint-client ./client
+  - docker build -t applayer/checkpoint-nginx ./nginx
+  - docker build -t applayer/checkpoint-server ./server
+  - docker build -t applayer/checkpoint-worker ./worker
+
+#login to docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+#push images to dockerhub
+  - docker push applayer/checkpoint-client
+  - docker push applayer/checkpoint-nginx
+  - docker push applayer/checkpoint-server
+  - docker push applayer/checkpoint-worker
