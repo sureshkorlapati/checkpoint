@@ -1,0 +1,4 @@
+RDS
+username : postgres
+password : postgres_password
+dbname: fibvalues

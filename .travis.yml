@@ -16,8 +16,22 @@ after_success:
 
 #login to docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
 #push images to dockerhub
   - docker push applayer/checkpoint-client
   - docker push applayer/checkpoint-nginx
   - docker push applayer/checkpoint-server
   - docker push applayer/checkpoint-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "checkpoint"
+  env: "Checkpoint-env"
+  bucket_name: "elasticbeanstalk-us-east-2-538830916293"
+  bucket_path: "checkpoint"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
